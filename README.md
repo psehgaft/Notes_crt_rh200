@@ -17,8 +17,15 @@ ln -s /[path]/[folder or file] /[path]/[folder or file]
 
 ls -l /[path]/[folder or file]
 ```
+
 ## Users
 
+```sh
+id
+id [user]
+
+ps -au
+```
 
 ## Root
 
@@ -43,3 +50,24 @@ passwd
 ...
 exit
 ```
+
+## Repos
+
+Validatin repos
+
+```sh
+dnf repolist all
+cd /etc/yum.repos.d/
+ls
+```
+
+Configuring repos
+
+```sh
+dnf config-manager --add-repo [URL]
+dnf repolist all
+cd /etc/yum.repos.d/
+ls
+```
+
+
