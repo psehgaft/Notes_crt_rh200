@@ -416,20 +416,51 @@ Create users account
 ```sh
 useradd [username]
 passwd [username]
+
+cat /etc/passwd
 ```
 
-
-
-
-
-
-
-
-
-
+Create groups
 
 ```sh
+cat /etc/group | grep [group]
 
+groupadd [name-group]
 ```
 
+Add users to groups
 
+```sh
+usermod -a -G [name-group] [username]
+
+id [username]
+```
+
+Directory permissions
+
+```sh
+mkdir /[dir-path]
+chown [name-group]:[username] /[dir-path]
+chmode 770 /[dir-path]
+```
+
+New files permissions
+
+```sh
+ls /[dir-path]
+chmod g+s /[dir-path]
+chmod +t /[dir-path]
+```
+
+## Cron Job
+
+```sh
+date
+crontab -e
+```
+
+```crone
+00 13 * * 1-5 [command]
+
+[min hour DoM Month DoW]
+```
