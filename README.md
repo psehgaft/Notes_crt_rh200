@@ -14,7 +14,11 @@ ssh-add .ssh/[key]
 
 ```sh
 ln -s /[path]/[folder or file] /[path]/[folder or file]
+
+ls -l /[path]/[folder or file]
 ```
+## Users
+
 
 ## Root
 
@@ -27,4 +31,15 @@ rhgb quiet
 to
 
 rd.break enforcing=0
+```
+
+On prompt
+
+```sh
+mount -o remount,rw /sysroot
+chroot /sysroot
+whoami
+passwd
+...
+exit
 ```
