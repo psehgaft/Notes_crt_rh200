@@ -10,7 +10,7 @@ eval $(ssh-agent)
 ssh-add .ssh/[key]
 ```
 
-# Hard and Soft links
+## Hard and Soft links
 
 ```sh
 ln -s /[path]/[folder or file] /[path]/[folder or file]
@@ -160,10 +160,130 @@ ip a
 
 ## IP forwarding
 
+Edit file `/etc/sysctl.conf`
+
+```/etc/sysctl.conf
+...
+net.ipv4.ip_forward=1 
+```
+Validate
+
 ```sh
+cat /proc/sys/net/ipv4/ip_forward
+```
+
+## Multiuser config
+
+```sh
+systemctl set-default multi-user.target
+systemctl get-default 
+```
+
+Edit GRUB `/etc/default/grub`
+
+```/etc/default/grub
+GRUB_CMDLINE_LINUX="....... rhgb quiet"
+
+to
+
+GRUB_CMDLINE_LINUX="....... "
+```
+
+Charge config
+
+```sh
+grub2-mkconfig -o /boot/grub2/grub.cfg
+```
+
+## Volumes
+
+Validation
+
+```sh
+lsblk
+
+fdisk -l
+```
+
+Create partition
+
+```sh
+fdisk -l /dev/sdb
+fdisk /dev/sdb
+```
+
+on fdisk
+
+```fdisk
+n
++[cuantity on mb]M
+t
+8e
+w
+```
+
+Create phisical volume
+
+```sh
+pvcreate /dev/sdb1
+
+vgcreate [name] /dev/sdb1
+```
+
+Validation
+
+```sh
+partprobe /dev/sdb
+fdisk -l /dev/sdb
+lsblk
+pvs
+vgs
+```
+
+Create a logical volume
+
+```sh
+lvcreate -L [cuantity on Gb]G -n [name] [volumegroup-name]
+
+vgcreate [name] /dev/sdb1
+```
+
+Validation
+
+```sh
+partprobe /dev/sdb
+fdisk -l /dev/sdb
+lsblk
+pvs
+vgs
+lvs
+```
+
+Format logical volume
+
+```sh
+mkfs.xfs /dev/[volumegroup-name]/[lovical-volume-name]
+lsblk -f
+
+mkdir -p [mount-point-path] 
+```
+
+Mount
+
+```sh
+mkdir -p /[mount-point-path] 
+```
+
+Edith `/etc/fstab`
+
+```/etc/fstab
+UUID=[filesistem] /[mount-point-path] xfs defaults 0 0
 
 ```
 
 
+```sh
+
+```
 
 
