@@ -271,15 +271,161 @@ mkdir -p [mount-point-path]
 Mount
 
 ```sh
-mkdir -p /[mount-point-path] 
+mkdir -p /[mount-point-path]
 ```
 
 Edith `/etc/fstab`
 
 ```/etc/fstab
 UUID=[filesistem] /[mount-point-path] xfs defaults 0 0
+```
+
+```sh
+mkdir -a
+df -hT
+```
+
+Extend colume group
+
+Validations
+
+```sh
+vgs
+lvs
+```
+
+Extender
+
+```sh
+lvextended -L +[cuantity on Gb]G /dev/[volumegroup-name]/[lovical-volume-name]
+
+xfs_growfs /dev/[volumegroup-name]
+
+df -hT
+```
+
+
+
+Create a thin provision volume
+
+Install vdop
+
+```sh
+dnf install -y vdo kmod-kvdo
+```
+
+validation
+
+```sh
+umount /dev/sdc
+
+lsblk
+
+fdisk -l /dev/sdc
+```
+
+Create a logical thin volume
+
+```sh
+vdo create --name=[name] --device=/dev/sdc --vdoLogicalSize=4T --writePolicy=auto --force
+
+fdisk -l /dev/mapper/[name]
+```
+
+## HTTP
+
+Install
+
+```sh
+dnf install -y httpd
+systemctl start httpd
+systemctl enable httpd
+```
+
+Edit `/var/www/html/index.html`
+
+```/var/www/html/index.html
+[text here]
+```
+
+## Firewall 
+
+```sh
+firewall-cmd --list-all
+
+firewall-cmd --permanent --add-service={http,https}
+
+firewall-cmd --reload
+
+firewall-cmd --list-all
+```
+
+## Large files
+
+```sh
+mkdir /[dir]
+
+find /[origin-áth] -type f -size +4M
+
+find /[origin-áth] -type f -size +4M > /find/largefiles
 
 ```
+
+## Shell script with arguments
+
+Script with 2 arguments and default
+
+```script.sh
+#! /bin/bash
+
+if [ "$1" == "Argument1" ]; then
+   echo "Response for argument 1"
+elif [ "$2" == "Argument2" ]; then
+   echo "Response for argument 2"
+else 
+   echo "Response for default"
+fi
+```
+
+```sh
+chmod 700 cript.sh
+```
+
+## Users and loggin
+
+Welcome msg
+
+```sh
+cd /etc/skel/
+ls -al
+
+echo "welcome phrase" > welcome
+```
+
+Expire pw `/etc/login.defs`
+
+```/etc/login.defs
+PASS_MAX_DAYS [number of days expiration]
+PASS_MIN_DAYS
+PASS_MIN_LEN [length]
+PASS_MIN_AGE
+```
+
+Create users account
+
+```sh
+useradd [username]
+passwd [username]
+```
+
+
+
+
+
+
+
+
+
 
 
 ```sh
