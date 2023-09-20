@@ -27,6 +27,36 @@ id [user]
 ps -au
 ```
 
+Login as root
+```sh
+su -
+```
+
+Login as another user
+
+```sh
+su - [users]
+```
+
+Add to sudoers file `/etc/sudoers.d/[user]`
+
+```/etc/sudoers.d/[user]
+[user]  ALL=(ALL)  ALL
+
+[goup]  ALL=(ALL)  ALL
+
+[command]  ALL=(ALL)  NOPASSWD:ALL
+```
+
+Add users and passwords
+
+```sh
+useradd [user]
+passwd [user]
+```
+
+# Practice 200
+
 ## Root
 
 Enter grupo pres [e]
@@ -69,5 +99,71 @@ dnf repolist all
 cd /etc/yum.repos.d/
 ls
 ```
+
+## Timezone
+
+Validate
+
+```sh
+timedatectl
+timedatectl set-timezone "america/new_york"
+timedatectl set-ntp yes
+```
+
+Install Chrony
+
+```sh
+rpm -qa | grep chrony
+
+dnf install -y chrony
+systemctl status chronyd
+```
+
+Edit chrony conf
+
+```sh
+vi /etc/chrony.conf
+```
+
+
+## DNS / gateway
+
+
+```sh
+cd /sysconfig/network-scripts/
+vi [adapter-name-config-file]
+```
+
+## Add network
+
+Validate
+
+```sh
+nmcli connection show
+```
+Edit config
+
+```sh
+nmcli connection modify System\ eth1 +ipv4.addresses [ip/mask]
+nmcli connection reload
+
+nmcli connection modify System\ eth1 ipv6.method manual ipv6.addresses [ip::###/mask]
+nmcli connection reload
+```
+
+Validate
+
+```sh
+nmcli connection show System\ [adapter-name]
+ip a
+```
+
+## IP forwarding
+
+```sh
+
+```
+
+
 
 
