@@ -37,13 +37,28 @@ firewall-cmd --reload
 
 ######## CRON Job
 
-* * * * * "su -u user echo 'hello' >> log"
+crontab -e
+* * * * * [user] "echo 'hello' >> log"
 
 ######## Colab users / files
 
 mkdir /[dir-path]
 chown :[name-group] [dir-path]
 chmod ug+w [dir-path]
-chmod 2770 [dir-path]
+chmod 027 [dir-path]
 
-######## Colab users / files
+######## NTP
+
+timedatectl set-timezone "americas/new_york"
+timedatectl set-ntp true
+
+dnf install -y chrony
+vi /etc/chroney.conf
+systemctl start chronyd
+systemctl enable chronyd
+
+######## AutoFS
+
+
+
+
