@@ -464,3 +464,14 @@ crontab -e
 
 [min hour DoM Month DoW]
 ```
+
+
+## NFS
+
+```sh
+mkdir [mountpoint]
+mount [server]:[nfs-path] [mountpoint]
+
+vim /etc/fstab
+[server]:[nfs-path]  [mountpoint]  nfs  rw,sync  0 0
+```
