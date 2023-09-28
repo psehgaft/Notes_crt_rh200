@@ -59,6 +59,16 @@ systemctl enable chronyd
 
 ######## AutoFS
 
+## [server A]
 
+yum install autofs
+sudo systemctl enable --now autofs
 
+vim /etc/auto.master.d/guests.autofs
+/remote	/etc/auto.direct
+
+vim /etc/auto.guests
+*	-rw,sync,fstype=nfs4	[server]:[nfs-path]/&
+
+systemctl enable --now autofs
 
