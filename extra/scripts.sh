@@ -137,7 +137,14 @@ systemctl enable --now tuned
 tuned-adm recommend
 tuned-adm profile [profile]
 
+######## Container
 
+podman run -d --name [container-name] -p [port-pod]:[port] -v [mount-point]:[data-path]:Z [image]:[tag]
+podman generate systemd --name [container-name] --files --new
+podman stop [container-name]
+podman rm [container-name]
+systemctl --user daemon-reload
+systemctl --user enable --now container-[container-name].service
 
 
 
