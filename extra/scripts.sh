@@ -13,11 +13,13 @@ yum-config-manager --add-repo [url]
 ######## Users
 
 groupadd [name-group]
-useradd [username]
+useradd -G [name-group] [username]
 passwd [username]
 
-usermod -aG [name-group] [username]
+# usermod -aG [name-group] [username]
 usermod -s /sbin/nologin [username]
+
+useradd -g [id-number] [username]
 
 ######## HTTP Selinux
 
@@ -44,4 +46,4 @@ chown :[name-group] [dir-path]
 chmod ug+w [dir-path]
 chmod 2770 [dir-path]
 
-
+######## Colab users / files
