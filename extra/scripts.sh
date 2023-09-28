@@ -10,7 +10,7 @@ hostnamectl set-hostname [hostname]
 dnf config-manager --add-repo [url]
 yum-config-manager --add-repo [url]
 
-######## Users
+######## Users / UUid
 
 groupadd [name-group]
 useradd -G [name-group] [username]
@@ -45,7 +45,6 @@ crontab -e
 mkdir /[dir-path]
 chown :[name-group] [dir-path]
 chmod ug+w [dir-path]
-chmod 027 [dir-path]
 
 ######## NTP
 
@@ -71,4 +70,20 @@ vim /etc/auto.guests
 *	-rw,sync,fstype=nfs4	[server]:[nfs-path]/&
 
 systemctl enable --now autofs
+
+######## ACL
+
+chmod 027 [dir-path]
+chown [username]: [dir-path]
+chmod o-wr [dir-path]
+
+######## Find files and tar
+
+find [dir-path] -user [username] 
+
+grep [word] [file] >> [file]
+
+tar -cvjsf [folder-name].tar.bz2 [folder-name]
+
+
 
