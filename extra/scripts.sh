@@ -83,7 +83,18 @@ find [dir-path] -user [username]
 
 grep [word] [file] >> [file]
 
-tar -cvjsf [folder-name].tar.bz2 [folder-name]
+tar -vcjf [folder-name].tar.bz2 [folder-name]
+
+######## Root
+
+## in grub press [e]
+rd.break enforcing=0
+
+mount -o remount,rw /sysroot
+chroot /sysroot
+passwd
+
+######## Root
 
 
 
