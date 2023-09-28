@@ -121,6 +121,23 @@ systemctl daemon-reload
 
 ######## VDO
 
+yum list installed vdo
+vdo create --name=vdo1 --device=/dev/vdc --vdoLogicalSize=50G
+udevadm settle
+mkfs.xfs -K /dev/mapper/vdo1
+vi /etc/fstab
+/dev/mapper/vdo1  [mountpoint] xfs  defaults 1 2
+vdostats --human-readable
+cp [filename] [mountpoint]/[filename]
+
+######## Tuning
+
+yum install tuned
+systemctl enable --now tuned
+tuned-adm recommend
+tuned-adm profile [profile]
+
+
 
 
 
