@@ -91,6 +91,7 @@ rd.break enforcing=0
 mount -o remount,rw /sysroot
 chroot /sysroot
 passwd
+touch /.autorelabel
 
 ######## Resize Fs
 
