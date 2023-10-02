@@ -8,7 +8,14 @@ hostnamectl set-hostname [hostname]
 ######## Config Repos
 
 dnf config-manager --add-repo [url]
-yum-config-manager --add-repo [url]
+yum config-manager --add-repo [url]
+yum repolist all
+yum config-manager --disable rht-updates
+
+vi /etc/dnf/plugins/subscription-manager.conf
+---
+enabled=0
+---
 
 ######## Users / UUid
 
@@ -19,7 +26,7 @@ passwd [username]
 # usermod -aG [name-group] [username]
 usermod -s /sbin/nologin [username]
 
-useradd -g [id-number] [username]
+useradd -u [id-number] [username]
 
 ######## HTTP Selinux
 
@@ -30,9 +37,11 @@ systemctl enable httpd
 chcon -t httpd_sys_content_t [dir-path]
 
 semanage fcontext -a -t httpd_sys_content_t '[dir-path](/.*)?'
+# chcon -Rvt httpd_sys_content_t /var/www/html
 semanage port -a -t http_port_t -p tcp 82
 
 firewall-cmd --permanent --add-service={http,https}
+firewall-cmd --permanent --add-port=80/tcp
 firewall-cmd --reload
 
 ######## CRON Job
@@ -45,6 +54,9 @@ crontab -e
 mkdir /[dir-path]
 chown :[name-group] [dir-path]
 chmod ug+w [dir-path]
+# files creaed on [dir-path] automatically hace goup ownership set to the [name-group] group
+chmod g+s [dir-path] 
+
 
 ######## NTP
 
@@ -74,6 +86,9 @@ systemctl enable --now autofs
 chmod 027 [dir-path]
 chown [username]: [dir-path]
 chmod o-wr [dir-path]
+chmod ugo-x [dir-path]
+setfacl -m u:toby:rwx [dir-path]
+
 
 ######## Find files and tar
 
@@ -115,7 +130,7 @@ parted /dev/vdb mkpart [partitionname] xfs 512M 400GB
 udevadm settle
 vgcreate [volumegroup] /dev/vdb2
 lvcreate -n [volumename] -L 400M [volumegroup]
-mkfs -t xfs /dev/[volumename]/[volumegroup]
+mkfs.ext3 /dev/[volumename]/[volumegroup]
 vi /etc/fstab
 /dev/[volumename]/[volumegroup]  [mountpoint] xfs  defaults 1 2
 systemctl daemon-reload
@@ -140,10 +155,28 @@ tuned-adm profile [profile]
 
 ######## Container
 
-podman run -d --name [container-name] -p [port-pod]:[port] -v [mount-point]:[data-path]:Z [image]:[tag]
+useradd [user]
+passwd [user]
+dnf modile install container* -y
+vim /etc/systemd/journald/journal.conf
+---
+[journal]
+Storage=persistent
+---
+mkdir [local-path]
+cp -r /var/log/journal/ [local-path]
+chown -R [user]:[user] [local-path]
+systemctl restart systemd-journald
+reboot
+
+[user]
+podman login [registry]
+podman search [container-name]
+podman pull [image]
+podman run -d --name [container-name] -p [server-pod]:[container-port] -v [local-path]:[continer-path]:Z [image]:[tag]
+mkdir -p ~/config/systemd/user
+loginctl enable-linger
 podman generate systemd --name [container-name] --files --new
-podman stop [container-name]
-podman rm [container-name]
 systemctl --user daemon-reload
 systemctl --user enable --now container-[container-name].service
 
