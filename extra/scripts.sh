@@ -12,6 +12,11 @@ yum config-manager --add-repo [url]
 yum repolist all
 yum config-manager --disable rht-updates
 
+vi  /etc/yum.repos.d/server01_[repo-name]
+---
+gpgcheck=1
+---
+
 vi /etc/dnf/plugins/subscription-manager.conf
 ---
 enabled=0
@@ -24,7 +29,7 @@ useradd -G [name-group] [username]
 passwd [username]
 
 # usermod -aG [name-group] [username]
-usermod -s /sbin/nologin [username]
+useradd -s /sbin/nologin [username]
 
 useradd -u [id-number] [username]
 
@@ -56,7 +61,6 @@ chown :[name-group] [dir-path]
 chmod ug+w [dir-path]
 # files creaed on [dir-path] automatically hace goup ownership set to the [name-group] group
 chmod g+s [dir-path] 
-
 
 ######## NTP
 
