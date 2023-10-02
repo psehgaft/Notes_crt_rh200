@@ -26,12 +26,10 @@ enabled=0
 
 groupadd [name-group]
 useradd -G [name-group] [username]
-passwd [username]
-
-# usermod -aG [name-group] [username]
+# Follow user has not access to an interactive shell 
 useradd -s /sbin/nologin [username]
-
 useradd -u [id-number] [username]
+passwd [username]
 
 ######## HTTP Selinux
 
@@ -39,10 +37,9 @@ dnf install -y httpd
 systemctl start httpd
 systemctl enable httpd
 
-chcon -t httpd_sys_content_t [dir-path]
+chcon -Rvt httpd_sys_content_t [dir-path]
 
 semanage fcontext -a -t httpd_sys_content_t '[dir-path](/.*)?'
-# chcon -Rvt httpd_sys_content_t /var/www/html
 semanage port -a -t http_port_t -p tcp 82
 
 firewall-cmd --permanent --add-service={http,https}
@@ -154,6 +151,7 @@ cp [filename] [mountpoint]/[filename]
 
 yum install tuned
 systemctl enable --now tuned
+sudo tuned-adm active
 tuned-adm recommend
 tuned-adm profile [profile]
 
