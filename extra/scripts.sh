@@ -22,15 +22,6 @@ vi /etc/dnf/plugins/subscription-manager.conf
 enabled=0
 ---
 
-######## Users / UUid
-
-groupadd [name-group]
-useradd -G [name-group] [username]
-# Follow user has not access to an interactive shell 
-useradd -s /sbin/nologin [username]
-useradd -u [id-number] [username]
-passwd [username]
-
 ######## HTTP Selinux
 
 dnf install -y httpd
@@ -46,6 +37,14 @@ firewall-cmd --permanent --add-service={http,https}
 firewall-cmd --permanent --add-port=80/tcp
 firewall-cmd --reload
 
+######## Users / UUid
+
+groupadd [name-group]
+useradd -G [name-group] [username]
+# Follow user has not access to an interactive shell 
+useradd -s /sbin/nologin [username]
+passwd [username]
+
 ######## CRON Job
 
 crontab -e
@@ -55,7 +54,7 @@ crontab -e
 
 mkdir /[dir-path]
 chown :[name-group] [dir-path]
-chmod ug+w [dir-path]
+chmod 770 [dir-path]
 # files creaed on [dir-path] automatically hace goup ownership set to the [name-group] group
 chmod g+s [dir-path] 
 
@@ -63,39 +62,46 @@ chmod g+s [dir-path]
 
 timedatectl set-timezone "americas/new_york"
 timedatectl set-ntp true
+hwclock --systohc
 
 dnf install -y chrony
 vi /etc/chroney.conf
+firewall-cmd --add-service ntp --permanent
 systemctl start chronyd
 systemctl enable chronyd
 
 ######## AutoFS
 
-yum install autofs
+yum install autofs nfs-utils
 sudo systemctl enable --now autofs
 
-vim /etc/auto.master.d/guests.autofs
-/remote	/etc/auto.direct
+groupadd -g 1234 [autofsusers]
+useradd -d /shared/[userautofs]01 -u 1234 -g [autofsusers] [userautofs]01
 
-vim /etc/auto.guests
-*	-rw,sync,fstype=nfs4	[server]:[nfs-path]/&
+vim /etc/auto.master
+/shared	/etc/auto.shared
 
-systemctl enable --now autofs
+vim /etc/auto.shared
+*	-rw,soft,intr [server]:[nfs-path]/&
+
+sudo systemctl restart autofs
 
 ######## ACL
 
-chmod 027 [dir-path]
-chown [username]: [dir-path]
-chmod o-wr [dir-path]
+cp [ori-path] [dir-path]
 chmod ugo-x [dir-path]
-setfacl -m u:toby:rwx [dir-path]
+setfacl -m u:[user]:rwx [dir-path]
+chmod o-r [dir-path]
 
+######## User ID
+
+useradd -u [id-number] [username]
 
 ######## Find files and tar
 
 find [dir-path] -user [username] 
 
-grep [word] [file] >> [file]
+grep [word] [file] > [file]
 
 tar -vcjf [folder-name].tar.bz2 [folder-name]
 
@@ -111,13 +117,12 @@ touch /.autorelabel
 
 ######## Resize Fs
 
-lvextend -L +[cuantity]M /dev/[vg]/[lv]
+lvextend -L +[cuantity]M -r /dev/[vg]/[lv]
 xfs_growfs [mountpoint]
 
 ######## SWAP / Volumes
 
-parted /dev/vdb mkpart myswap linux-swap 0MB 512MB
-udevadm settle
+gdisk /dev/sdb
 mkswap /dev/vdb1
 swapon /dev/vdb1
 lsblk --fs /dev/vdb1
@@ -127,23 +132,26 @@ UUID=[UUID]  swap  swap  defaults  0 0
 systemctl daemon-reload
 swapon -a
 
-parted /dev/vdb mkpart [partitionname] xfs 512M 400GB
-udevadm settle
+gdisk /dev/sdb
+sudo pvcreate /dev/vdb2
+sudo vgcreate -s 16 datavg1 /dev/vdb2
 vgcreate [volumegroup] /dev/vdb2
-lvcreate -n [volumename] -L 400M [volumegroup]
+lvcreate -l [PE-Cuantity] -n [volumename] [volumegroup]
 mkfs.ext3 /dev/[volumename]/[volumegroup]
 vi /etc/fstab
-/dev/[volumename]/[volumegroup]  [mountpoint] xfs  defaults 1 2
+/dev/[volumename]/[volumegroup]  [mountpoint] xfs  defaults 0 0
 systemctl daemon-reload
 
 ######## VDO
 
-yum list installed vdo
+yum list installed vdo kmod-kvdo
 vdo create --name=vdo1 --device=/dev/vdc --vdoLogicalSize=50G
-udevadm settle
 mkfs.xfs -K /dev/mapper/vdo1
-vi /etc/fstab
-/dev/mapper/vdo1  [mountpoint] xfs  defaults 1 2
+cp /usr/share/doc/vdo/examples/systemd /etc/systemd/system/[mountpoint].mount
+---
+edit [what,where]
+---
+systemctl enable --now vdo.mount
 vdostats --human-readable
 cp [filename] [mountpoint]/[filename]
 
@@ -182,6 +190,11 @@ podman generate systemd --name [container-name] --files --new
 systemctl --user daemon-reload
 systemctl --user enable --now container-[container-name].service
 
+##########
+chown [username]: [dir-path]
+# chmod o-wr [dir-path]
+# chmod 027 [dir-path]
+chmod ug+w [dir-path]
 
 
 
