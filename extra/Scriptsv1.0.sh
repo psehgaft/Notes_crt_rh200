@@ -17,20 +17,12 @@ vi  /etc/yum.repos.d/server01_[repo-name]
 gpgcheck=1
 ---
 
-vi /etc/dnf/plugins/subscription-manager.conf
----
-enabled=0
----
-
 ######## HTTP Selinux
 
 dnf install -y httpd
 systemctl start httpd
 systemctl enable httpd
 
-chcon -Rvt httpd_sys_content_t [dir-path]
-
-semanage fcontext -a -t httpd_sys_content_t '[dir-path](/.*)?'
 semanage port -a -t http_port_t -p tcp 82
 
 firewall-cmd --permanent --add-service={http,https}
@@ -47,6 +39,7 @@ passwd [username]
 
 ######## CRON Job
 
+[user]
 crontab -e
 * * * * * [user] "echo 'hello' >> log"
 
@@ -78,9 +71,6 @@ systemctl enable chronyd
 yum install autofs nfs-utils
 sudo systemctl enable --now autofs
 
-groupadd -g 1234 [autofsusers]
-useradd -d /shared/[userautofs]01 -u 1234 -g [autofsusers] [userautofs]01
-
 vim /etc/auto.master
 /shared	/etc/auto.shared
 
@@ -102,7 +92,7 @@ useradd -u [id-number] [username]
 
 ######## Find files and tar
 
-find [dir-path] -user [username] 
+find [dir-path] -user [username] -exec cp "{}" [destination-path]
 
 grep [word] [file] > [file]
 
@@ -131,18 +121,21 @@ swapon /dev/vdb1
 lsblk --fs /dev/vdb1
 # ... UUID
 vi /etc/fstab
+---
 UUID=[UUID]  swap  swap  defaults  0 0
+---
 systemctl daemon-reload
 swapon -a
 
 fdisk /dev/sdb
-sudo pvcreate /dev/vdb2
-sudo vgcreate -s 16 [volumegroup] /dev/vdb2
-vgcreate [volumegroup] /dev/vdb2
+pvcreate /dev/vdb2
+vgcreate -s 16 [volumegroup] /dev/vdb2
 lvcreate -l [PE-Cuantity] -n [volumename] [volumegroup]
 mkfs.ext3 /dev/[volumename]/[volumegroup]
 vi /etc/fstab
+---
 /dev/[volumegroup]/[volumename]  [mountpoint] xfs  defaults 0 0
+---
 systemctl daemon-reload
 
 ######## VDO
@@ -168,14 +161,13 @@ tuned-adm profile [profile]
 
 ######## Container
 
-useradd [user]
-passwd [user]
-dnf modile install container* -y
+
 vim /etc/systemd/journald/journal.conf
 ---
 [journal]
 Storage=persistent
 ---
+
 mkdir [local-path]
 cp -r /var/log/journal/ [local-path]
 chown -R [user]:[user] [local-path]
@@ -193,7 +185,7 @@ podman generate systemd --name [container-name] --files --new
 systemctl --user daemon-reload
 systemctl --user enable --now container-[container-name].service
 
-##########
+
 
 
 
