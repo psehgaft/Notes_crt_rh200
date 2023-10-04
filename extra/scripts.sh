@@ -131,7 +131,7 @@ swapon /dev/vdb1
 lsblk --fs /dev/vdb1
 # ... UUID
 vi /etc/fstab
-UUID=[UUID]  none  swap  defaults  0 0
+UUID=[UUID]  swap  swap  defaults  0 0
 systemctl daemon-reload
 swapon -a
 
