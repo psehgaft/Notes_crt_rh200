@@ -66,7 +66,10 @@ hwclock --systohc
 
 dnf install -y chrony
 vi /etc/chroney.conf
-firewall-cmd --add-service ntp --permanent
+---
+server [servername] iburst
+---
+
 systemctl start chronyd
 systemctl enable chronyd
 
@@ -82,7 +85,7 @@ vim /etc/auto.master
 /shared	/etc/auto.shared
 
 vim /etc/auto.shared
-*	-rw,soft,intr [server]:[nfs-path]/&
+*	-rw,sync,fstype=nfs4 [server]:[nfs-path]/&
 
 sudo systemctl restart autofs
 
@@ -122,24 +125,24 @@ xfs_growfs [mountpoint]
 
 ######## SWAP / Volumes
 
-gdisk /dev/sdb
+fdisk /dev/sdb
 mkswap /dev/vdb1
 swapon /dev/vdb1
 lsblk --fs /dev/vdb1
 # ... UUID
 vi /etc/fstab
-UUID=[UUID]  swap  swap  defaults  0 0
+UUID=[UUID]  none  swap  defaults  0 0
 systemctl daemon-reload
 swapon -a
 
-gdisk /dev/sdb
+fdisk /dev/sdb
 sudo pvcreate /dev/vdb2
-sudo vgcreate -s 16 datavg1 /dev/vdb2
+sudo vgcreate -s 16 [volumegroup] /dev/vdb2
 vgcreate [volumegroup] /dev/vdb2
 lvcreate -l [PE-Cuantity] -n [volumename] [volumegroup]
 mkfs.ext3 /dev/[volumename]/[volumegroup]
 vi /etc/fstab
-/dev/[volumename]/[volumegroup]  [mountpoint] xfs  defaults 0 0
+/dev/[volumegroup]/[volumename]  [mountpoint] xfs  defaults 0 0
 systemctl daemon-reload
 
 ######## VDO
