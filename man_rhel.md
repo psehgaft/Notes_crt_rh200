@@ -38,4 +38,42 @@ mann
 | 8	| System administration and privileged commands	Maintenance tasks |
 | 9	| Linux kernel API	Internal kernel calls |
 
+Search for man Pages by Keyword
 
+```sh
+whatis unlink
+
+whatis cowsay
+
+whatis passwd
+
+whatis gedit
+
+whatis gzip
+```
+
+man command -k option
+
+```sh
+man -k unlink
+
+man -k cowsay
+
+man -k passwd
+```
+
+man command -K (uppercase) option searches for the keyword in the full-text page
+
+```sh
+man -K unlink
+
+man -K cowsay
+
+man -K passwd
+```
+
+Review man structure
+
+```sh
+man -K cowsay
+```
