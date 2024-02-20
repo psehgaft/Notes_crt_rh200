@@ -135,3 +135,22 @@ man tar | col -bx | sed -n "/^  *-f/,/^$/p"
 sudo tar -xjvf ./html.tar.bz2 ./htlm
 ```
 
+List of useful man pages
+
+```sh
+
+man 1 vim 
+man useradd 
+man -k semanage 
+man ps
+man -k cron 
+man 5 crontab 
+man fstab
+man -k temp
+man 5 tmpfiles.d
+man -k rsyslog
+man 5 rsyslog.conf
+man -k nmcli
+man -k firewalld
+```
+man semanage-port
