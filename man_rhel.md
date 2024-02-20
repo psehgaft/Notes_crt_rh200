@@ -1,6 +1,14 @@
 On the local system, it is common to find a source of documentation known as the system man pages. These pages are provided by software packages and can be accessed from the command line using the "man" command. Typically, man pages are stored in subdirectories of the /usr/share/man directory.
 
 ```sh
+man man
+
+man man | col -bx | sed -n "/^  *-k/,/^$/p"
+
+man man | col -bx | sed -n "/^  *-K/,/^$/p"
+```
+
+```sh
 ls /usr/share/man
 ```
 
@@ -49,7 +57,7 @@ whatis passwd
 
 whatis gedit
 
-whatis gzip
+whatis tar
 ```
 
 man command -k option
@@ -60,6 +68,22 @@ man -k unlink
 man -k cowsay
 
 man -k passwd
+
+man -k tar
+```
+
+To distinguish identical topic names in different sections, man page references include the section number in parentheses after the topic. 
+
+```sh
+man 1 unlink
+
+man 1 cowsay
+
+man 1 passwd
+
+man 1 tar
+
+man 5 tar
 ```
 
 man command -K (uppercase) option searches for the keyword in the full-text page
