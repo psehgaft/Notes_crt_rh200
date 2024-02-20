@@ -76,4 +76,38 @@ Review man structure
 
 ```sh
 man -K cowsay
+
+mar tar
 ```
+
+
+# Exercise
+
+Create a tar file bzip2 format
+
+```sh
+man tar | col -bx | sed -n "/^  *-c/,/^$/p"
+
+man tar | col -bx | sed -n "/^  *-j/,/^$/p"
+
+man tar | col -bx | sed -n "/^  *-v/,/^$/p"
+
+man tar | col -bx | sed -n "/^  *-f/,/^$/p"
+
+sudo tar -cjvf ./html.tar.bz2 ./htlm
+```
+
+Untar file
+
+```sh
+man tar | col -bx | sed -n "/^  *-x/,/^$/p"
+
+man tar | col -bx | sed -n "/^  *-j/,/^$/p"
+
+man tar | col -bx | sed -n "/^  *-v/,/^$/p"
+
+man tar | col -bx | sed -n "/^  *-f/,/^$/p"
+
+sudo tar -xjvf ./html.tar.bz2 ./htlm
+```
+
