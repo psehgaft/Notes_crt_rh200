@@ -5,6 +5,12 @@
 vi /sysconfig/network-scripts/[adapter-name]
 hostnamectl set-hostname [hostname]
 
+######## SSH
+sudo vi /etc/ssh/sshd_config
+...
+PermitRootLogin yes
+...
+
 ######## Config Repos
 
 dnf config-manager --add-repo [url]
