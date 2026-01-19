@@ -1,5 +1,28 @@
 #! /bin/bash
 
+######## Root passwd
+
+# on GRUB menu press "e"
+# add rd.breack
+
+mount -o remount.rw /sysroot
+chroot /sysroot
+passwd
+touch /.autorelabel
+exit
+exit
+reboot -t
+
+## Option B
+# on GRUB menu press "e"
+# add rw init=/bin/bash
+
+mount -o remount,rw /
+passwd
+touch /.autorelabel
+exec /sbin/init
+/sbin/reboot -f
+
 ######## Manage basic Networking
 
 vi /sysconfig/network-scripts/[adapter-name]
