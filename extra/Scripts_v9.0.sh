@@ -70,7 +70,6 @@ timedatectl set-timezone "americas/new_york"
 timedatectl set-ntp true
 hwclock --systohc
 
-dnf install -y chrony
 vi /etc/chroney.conf
 ---
 server [servername] iburst
