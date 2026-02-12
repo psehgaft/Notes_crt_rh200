@@ -36,10 +36,6 @@ gpgcheck=1
 
 ######## HTTP Selinux
 
-dnf install -y httpd
-systemctl start httpd
-systemctl enable httpd
-
 semanage port -a -t http_port_t -p tcp 82
 
 firewall-cmd --permanent --add-service={http,https}
@@ -114,16 +110,6 @@ find [dir-path] -user [username] -exec cp "{}" [destination-path]
 grep [word] [file] > [file]
 
 tar -vcjf [folder-name].tar.bz2 [folder-name]
-
-######## Root
-
-## in grub press [e]
-rd.break enforcing=0
-
-mount -o remount,rw /sysroot
-chroot /sysroot
-passwd
-touch /.autorelabel
 
 ######## Resize Fs
 
