@@ -80,16 +80,19 @@ systemctl enable chronyd
 
 ######## AutoFS
 
-yum install autofs nfs-utils
-sudo systemctl enable --now autofs
+dnf install autofs nfs-utils
+systemctl enable autofs
+
+mkdir -p /mnt-point-folder
+chmod 755 /mnt-point-folder
 
 vim /etc/auto.master
-/shared	/etc/auto.shared
+/mnt-point-folder	/etc/auto.mnt-point-folder
 
-vim /etc/auto.shared
-*	-rw,sync,fstype=nfs4 [server]:[nfs-path]/&
+vim /etc/auto.mnt-point-folder
+username	-rw,sync,fstype=nfs4 [server]:[nfs-path]/username
 
-sudo systemctl restart autofs
+systemctl restart autofs
 
 ######## ACL
 
@@ -139,19 +142,6 @@ vi /etc/fstab
 /dev/[volumegroup]/[volumename]  [mountpoint] xfs  defaults 0 0
 ---
 systemctl daemon-reload
-
-######## VDO
-
-yum list installed vdo kmod-kvdo
-vdo create --name=vdo1 --device=/dev/vdc --vdoLogicalSize=50G
-mkfs.xfs -K /dev/mapper/vdo1
-cp /usr/share/doc/vdo/examples/systemd /etc/systemd/system/[mountpoint].mount
----
-edit [what,where]
----
-systemctl enable --now vdo.mount
-vdostats --human-readable
-cp [filename] [mountpoint]/[filename]
 
 ######## Tuning
 
