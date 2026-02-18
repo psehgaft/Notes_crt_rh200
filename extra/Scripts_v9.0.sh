@@ -153,26 +153,22 @@ tuned-adm profile [profile]
 
 ######## Container
 
-
-vim /etc/systemd/journald/journal.conf
----
-[journal]
-Storage=persistent
----
-
 mkdir [local-path]
 cp -r /var/log/journal/ [local-path]
 chown -R [user]:[user] [local-path]
 systemctl restart systemd-journald
+podman build -t [imageName]:[tag] [context directory]
 reboot
 
 [user]
 podman login [registry]
-podman search [container-name]
-podman pull [image]
-podman run -d --name [container-name] -p [server-pod]:[container-port] -v [local-path]:[continer-path]:Z [image]:[tag]
+podman build -t [container-name]:[tag] [context directory]
+podman run -d --name [container-name] -p [server-pod]:[container-port] -v [local-path]:[continer-path]:Z [container-path]/[container-name]:[tag]
 mkdir -p ~/config/systemd/user
-loginctl enable-linger
+cd ~/.config/systemd/user
+podman generate systemd --new --files --name
+podman stop [container-name]
+podman rm [container-name]
 podman generate systemd --name [container-name] --files --new
-systemctl --user daemon-reload
 systemctl --user enable --now container-[container-name].service
+loginctl enable-linger
