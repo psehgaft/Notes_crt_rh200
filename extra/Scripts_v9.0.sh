@@ -151,11 +151,12 @@ systemctl daemon-reload
 
 ######## Tuning
 
-yum install tuned
-systemctl enable --now tuned
+dnf install tuned
+systemctl is-enabled tuned
+systemctl is-active tuned
 sudo tuned-adm active
-tuned-adm recommend
 tuned-adm profile [profile]
+tuned-adm recommend
 
 ######## Container
 
