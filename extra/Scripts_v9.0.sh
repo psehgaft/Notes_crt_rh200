@@ -31,7 +31,7 @@ yum config-manager --disable rht-updates
 
 vi  /etc/yum.repos.d/server01_[repo-name]
 ---
-gpgcheck=1
+gpgcheck=0
 ---
 
 ######## HTTP Selinux
