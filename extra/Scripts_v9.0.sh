@@ -167,11 +167,10 @@ tuned-adm recommend
 
 useradd [user]
 passwd [user]
-systemctl restart systemd-journald
-podman build -t [imageName]:[tag] [context directory]
 ssh [user]@[server]
 
 [user]
+podman image build -t [imageName]:[tag] [context directory]
 mkdir [local-path]
 chown -R [user]:[user] [local-path]
 chmod 0644 [local-path]
