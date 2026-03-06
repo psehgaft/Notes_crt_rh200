@@ -53,8 +53,8 @@ passwd [username]
 ######## CRON Job
 
 [user]
-crontab -e
-* * * * * [user] "echo 'hello' >> log"
+crontab -u [user] -e
+* * * * * "echo 'hello' >> log"
 
 ######## Colab users / files
 
