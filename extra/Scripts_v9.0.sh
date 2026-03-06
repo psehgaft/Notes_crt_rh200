@@ -167,9 +167,10 @@ tuned-adm recommend
 
 useradd [user]
 passwd [user]
+loginctl enable-linger [user]
 ssh [user]@[server]
 
-[user]
+## [user]
 podman image build -t [imageName]:[tag] [context directory]
 mkdir [local-path]
 chown -R [user]:[user] [local-path]
@@ -186,8 +187,6 @@ podman generate systemd --name [container-name] --files --new
 systemctl --user daemon-reload
 
 systemctl --user enable --now container-[container-name].service
-loginctl enable-linger
-
 
 ######## Extra
 sudo vim /etc/login.defs     # So that all new users inherit [days] days by default
