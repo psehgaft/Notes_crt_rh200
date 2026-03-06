@@ -72,7 +72,7 @@ hwclock --systohc
 
 vi /etc/chroney.conf
 ---
-server [servername] iburst
+pool [servername] iburst
 ---
 
 systemctl start chronyd
@@ -94,7 +94,7 @@ username	-rw,sync,fstype=nfs4 [server]:[nfs-path]/username
 
 systemctl restart autofs
 
-######## ACL
+######## Share folders
 
 cp [ori-path] [dir-path]
 chmod ugo-x [dir-path]
@@ -120,7 +120,11 @@ xfs_growfs [mountpoint]
 
 ######## SWAP / Volumes
 
-fdisk /dev/sdb
+parted /dev/vdb mklabel gpt
+
+parted /dev/vdb print
+parted /dev/vdb mkpart myswap linux-swap [start]MB [end]MB
+    
 mkswap /dev/vdb1
 swapon /dev/vdb1
 lsblk --fs /dev/vdb1
@@ -131,11 +135,13 @@ UUID=[UUID]  swap  swap  defaults  0 0
 ---
 systemctl daemon-reload
 swapon -a
+ 
+###  lvm
 
-fdisk /dev/sdb
-pvcreate /dev/vdb2
-vgcreate -s 16 [volumegroup] /dev/vdb2
-lvcreate -l [PE-Cuantity] -n [volumename] [volumegroup]
+parted /dev/vdb mkpart backup xfs 2048s 2GB
+pvcreate /dev/vdb2 
+vgcreate [volumegroup] /dev/vdb2
+lvcreate -n [volumename] -L [PE-Cuantity] [volumegroup]
 mkfs.ext3 /dev/[volumename]/[volumegroup]
 vi /etc/fstab
 ---
