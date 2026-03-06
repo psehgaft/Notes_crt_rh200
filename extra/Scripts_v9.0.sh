@@ -153,22 +153,33 @@ tuned-adm profile [profile]
 
 ######## Container
 
-mkdir [local-path]
-cp -r /var/log/journal/ [local-path]
-chown -R [user]:[user] [local-path]
+useradd [user]
+passwd [user]
 systemctl restart systemd-journald
 podman build -t [imageName]:[tag] [context directory]
-reboot
+ssh [user]@[server]
 
 [user]
+mkdir [local-path]
+chown -R [user]:[user] [local-path]
+chmod 0644 [local-path]
+
 podman login [registry]
 podman build -t [container-name]:[tag] [context directory]
+
 podman run -d --name [container-name] -p [server-pod]:[container-port] -v [local-path]:[continer-path]:Z [container-path]/[container-name]:[tag]
+
 mkdir -p ~/config/systemd/user
 cd ~/.config/systemd/user
-podman generate systemd --new --files --name
-podman stop [container-name]
-podman rm [container-name]
 podman generate systemd --name [container-name] --files --new
+systemctl --user daemon-reload
+
 systemctl --user enable --now container-[container-name].service
 loginctl enable-linger
+
+
+######## Extra
+sudo vim /etc/login.defs     # So that all new users inherit [days] days by default
+PASS_MAX_DAYS   [days]
+PASS_MIN_DAYS   [days]
+PASS_WARN_AGE   [days]
