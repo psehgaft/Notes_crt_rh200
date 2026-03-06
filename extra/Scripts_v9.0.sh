@@ -81,18 +81,23 @@ systemctl enable chronyd
 ######## AutoFS
 
 dnf install autofs nfs-utils
-systemctl enable autofs
 
-mkdir -p /mnt-point-folder
-chmod 755 /mnt-point-folder
+mkdir -p /[mnt-point-folder]
+chmod 755 /[mnt-point-folder]
 
-vim /etc/auto.master
-/mnt-point-folder	/etc/auto.mnt-point-folder
+vi /etc/auto.master.d/[mnt-point-folder].autofs
+---
+/[mnt-point-folder]	/etc/auto.[mnt-point-folder]
+---
 
-vim /etc/auto.mnt-point-folder
+vim /etc/auto.[mnt-point-folder]
+---
+*           -rw,sync,fstype=nfs4 [server]:[nfs-path]/&
 username	-rw,sync,fstype=nfs4 [server]:[nfs-path]/username
+---
 
-systemctl restart autofs
+systemctl enable autofs
+systemctl start autofs
 
 ######## Share folders
 
