@@ -54,7 +54,7 @@ passwd [username]
 
 [user]
 crontab -u [user] -e
-* * * * * "echo 'hello' >> log"
+* * * * * logger echo "hello" 
 
 ######## Colab users / files
 
